@@ -10,14 +10,12 @@
     --green: #1D9E75; --green-dark: #0F6E56; --green-light: #EAF3DE; --green-text: #3B6D11;
     --red-light: #FCEBEB; --red-text: #A32D2D;
     --bg: #f5f5f3; --surface: #ffffff; --border: rgba(0,0,0,0.12);
-    --text: #1a1a1a; --muted: #666;
-    --radius: 10px;
+    --text: #1a1a1a; --muted: #666; --radius: 10px;
   }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
   header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
-  header svg { width: 28px; height: 28px; color: var(--green); }
-  header h1 { font-size: 15px; font-weight: 600; color: var(--text); }
-  header span { font-size: 12px; color: var(--muted); margin-left: auto; }
+  header svg { width: 26px; height: 26px; color: var(--green); flex-shrink: 0; }
+  header h1 { font-size: 15px; font-weight: 600; }
   .nav { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); }
   .nav-btn { flex: 1; padding: 12px; font-size: 13px; font-weight: 500; border: none; background: none; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.15s; font-family: inherit; }
   .nav-btn.active { color: var(--green); border-bottom-color: var(--green); }
@@ -40,21 +38,25 @@
   .opt { padding: 4px 11px; font-size: 11px; font-weight: 500; border: 1px solid var(--border); border-radius: 20px; cursor: pointer; background: var(--surface); color: var(--muted); font-family: inherit; transition: all 0.12s; white-space: nowrap; }
   .opt.bom.sel { background: var(--green-light); color: var(--green-text); border-color: var(--green-text); }
   .opt.ruim.sel { background: var(--red-light); color: var(--red-text); border-color: var(--red-text); }
+  .progress-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .progress-bar { height: 4px; background: #e0e0e0; border-radius: 4px; margin-bottom: 14px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--green); border-radius: 4px; transition: width 0.3s; }
   .submit-btn { width: 100%; padding: 14px; background: var(--green); color: #fff; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; margin-top: 4px; }
   .submit-btn:hover { background: var(--green-dark); }
   .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
-  .progress-bar { height: 4px; background: #e0e0e0; border-radius: 4px; margin-bottom: 14px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--green); border-radius: 4px; transition: width 0.3s; }
-  .progress-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
-  .records-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .filters { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .filters input, .filters select { font-family: inherit; font-size: 13px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); outline: none; flex: 1; min-width: 120px; }
+  .filters input:focus, .filters select:focus { border-color: var(--green); }
+  .clear-filters { font-size: 12px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; background: none; color: var(--muted); font-family: inherit; white-space: nowrap; }
+  .records-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
   .records-count { font-size: 13px; color: var(--muted); }
   .clear-btn { font-size: 12px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; background: none; color: var(--muted); font-family: inherit; }
   .record-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
-  .record-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; cursor: pointer; }
+  .record-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; cursor: pointer; gap: 10px; }
   .record-info { display: flex; flex-direction: column; gap: 3px; flex: 1; }
-  .record-placa { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: 0.03em; }
+  .record-placa { font-size: 15px; font-weight: 700; color: var(--text); }
   .record-meta { font-size: 12px; color: var(--muted); }
-  .record-right { display: flex; align-items: center; gap: 8px; }
+  .record-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
   .badge { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
   .badge-ok { background: var(--green-light); color: var(--green-text); }
   .badge-warn { background: var(--red-light); color: var(--red-text); }
@@ -64,7 +66,6 @@
   .rec-checks { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-bottom: 12px; }
   @media(max-width:480px) { .rec-checks { grid-template-columns: 1fr; } }
   .rc { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; border-bottom: 1px solid var(--border); }
-  .rc:last-child { border-bottom: none; }
   .rc-name { color: var(--muted); }
   .rc-bom { color: var(--green-text); font-weight: 600; }
   .rc-ruim { color: var(--red-text); font-weight: 600; }
@@ -73,21 +74,24 @@
   .obs-label { font-size: 11px; color: var(--muted); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
   .obs-box { font-size: 13px; background: var(--surface); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); white-space: pre-wrap; color: var(--text); }
   .empty { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 14px; }
-  .empty-icon { font-size: 36px; margin-bottom: 10px; }
-  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(60px); background: #222; color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 500; transition: transform 0.3s; z-index: 999; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px); background: #222; color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 500; transition: transform 0.3s; z-index: 999; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast.green { background: var(--green); }
   .toast.red { background: var(--red-text); }
+  .loading { text-align: center; padding: 2rem; color: var(--muted); font-size: 13px; }
   .resp-info { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
   .resp-info strong { color: var(--text); }
+  .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 14px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--text); }
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
 </style>
 </head>
 <body>
 
 <header>
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-  <h1>Checklist de Segurança</h1>
-  <span id="header-date"></span>
+  <h1>Checklist de Segurança dos Veículos</h1>
 </header>
 
 <div class="nav">
@@ -95,6 +99,7 @@
   <button class="nav-btn" id="btn-admin" onclick="showTab('admin')">Registros</button>
 </div>
 
+<!-- FORMULÁRIO -->
 <div id="tab-form">
   <div class="container">
     <div class="section">
@@ -109,36 +114,64 @@
         <div class="field"><label>Responsável pelo checklist</label><input id="responsavel" placeholder="Nome do responsável"></div>
       </div>
     </div>
-
     <div class="section">
       <div class="section-title">Itens a verificar antes da saída</div>
       <div class="progress-label" id="prog-label">0 de 22 itens verificados</div>
       <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
       <div class="check-grid" id="check-grid"></div>
     </div>
-
     <div class="section">
       <div class="section-title">Observações de segurança</div>
       <div class="field"><textarea id="obs" placeholder="Descreva qualquer item que precise de atenção ou manutenção..."></textarea></div>
     </div>
-
     <button class="submit-btn" id="submit-btn" onclick="submitForm()">Enviar checklist</button>
   </div>
 </div>
 
+<!-- PAINEL ADMIN -->
 <div id="tab-admin" style="display:none">
   <div class="container">
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Total de registros</div></div>
+      <div class="stat"><div class="stat-num" id="stat-hoje">—</div><div class="stat-label">Hoje</div></div>
+      <div class="stat"><div class="stat-num" id="stat-ruins" style="color:var(--red-text)">—</div><div class="stat-label">Com itens ruins</div></div>
+    </div>
+    <div class="filters">
+      <input id="filter-placa" placeholder="Filtrar por placa..." oninput="applyFilters()">
+      <input id="filter-data" type="date" onchange="applyFilters()" title="Filtrar por data">
+      <select id="filter-status" onchange="applyFilters()">
+        <option value="">Todos os status</option>
+        <option value="ok">Tudo ok</option>
+        <option value="warn">Com itens ruins</option>
+      </select>
+      <button class="clear-filters" onclick="clearFilters()">Limpar filtros</button>
+    </div>
     <div class="records-header">
       <div class="records-count" id="rec-count"></div>
-      <button class="clear-btn" onclick="clearAll()">Limpar todos</button>
     </div>
-    <div id="records-list"></div>
+    <div id="records-list"><div class="loading">Carregando registros...</div></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<script>
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA36HyNiq-yMtc4VBU2LBNbLzcqkvCkJPg",
+  authDomain: "checklist-veiculos-22437.firebaseapp.com",
+  projectId: "checklist-veiculos-22437",
+  storageBucket: "checklist-veiculos-22437.firebasestorage.app",
+  messagingSenderId: "411703571595",
+  appId: "1:411703571595:web:6fbdd34d273c774422d08e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 const ITEMS = [
   "Cinto de segurança","Espelhos retrovisores","Faróis","Setas","Lanternas",
   "Faroletes","Buzina","Reservatório de água","Limpeza externa","Limpeza interna",
@@ -150,12 +183,13 @@ const ITEMS = [
 const state = {};
 ITEMS.forEach(i => state[i] = null);
 
-// Data de hoje
-const today = new Date();
-document.getElementById('data').valueAsDate = today;
-document.getElementById('header-date').textContent = today.toLocaleDateString('pt-BR', {weekday:'short', day:'2-digit', month:'short'});
+let allRecords = [];
+let filteredRecords = [];
 
-// Gera o grid de itens
+// Data de hoje
+document.getElementById('data').valueAsDate = new Date();
+
+// Monta o grid de itens
 const grid = document.getElementById('check-grid');
 ITEMS.forEach(item => {
   const div = document.createElement('div');
@@ -163,35 +197,23 @@ ITEMS.forEach(item => {
   const safe = item.replace(/'/g,"&#39;");
   div.innerHTML = `<span class="check-label">${item}</span>
     <div class="check-opts">
-      <button class="opt bom" onclick="pick(this,'${safe}','bom')">Bom</button>
-      <button class="opt ruim" onclick="pick(this,'${safe}','ruim')">Ruim</button>
+      <button class="opt bom" onclick="window._pick(this,'${safe}','bom')">Bom</button>
+      <button class="opt ruim" onclick="window._pick(this,'${safe}','ruim')">Ruim</button>
     </div>`;
   grid.appendChild(div);
 });
 
-function updateProgress() {
-  const filled = ITEMS.filter(i => state[i] !== null).length;
-  const pct = Math.round((filled / ITEMS.length) * 100);
-  document.getElementById('prog-fill').style.width = pct + '%';
-  document.getElementById('prog-label').textContent = `${filled} de ${ITEMS.length} itens verificados`;
-}
-
-function pick(btn, item, val) {
+window._pick = function(btn, item, val) {
   const decoded = item.replace(/&#39;/g, "'");
   const opts = btn.closest('.check-opts');
   opts.querySelectorAll('.opt').forEach(b => b.classList.remove('sel'));
   btn.classList.add('sel');
   state[decoded] = val;
-  updateProgress();
-}
-
-function showTab(tab) {
-  document.getElementById('tab-form').style.display = tab === 'form' ? '' : 'none';
-  document.getElementById('tab-admin').style.display = tab === 'admin' ? '' : 'none';
-  document.getElementById('btn-form').classList.toggle('active', tab === 'form');
-  document.getElementById('btn-admin').classList.toggle('active', tab === 'admin');
-  if (tab === 'admin') renderRecords();
-}
+  const filled = ITEMS.filter(i => state[i] !== null).length;
+  const pct = Math.round((filled / ITEMS.length) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = `${filled} de ${ITEMS.length} itens verificados`;
+};
 
 function showToast(msg, type) {
   const t = document.getElementById('toast');
@@ -200,65 +222,109 @@ function showToast(msg, type) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-function getRecords() {
-  try { return JSON.parse(localStorage.getItem('cl_records') || '[]'); } catch { return []; }
-}
-function saveRecords(arr) {
-  localStorage.setItem('cl_records', JSON.stringify(arr));
-}
+window.showTab = function(tab) {
+  document.getElementById('tab-form').style.display = tab === 'form' ? '' : 'none';
+  document.getElementById('tab-admin').style.display = tab === 'admin' ? '' : 'none';
+  document.getElementById('btn-form').classList.toggle('active', tab === 'form');
+  document.getElementById('btn-admin').classList.toggle('active', tab === 'admin');
+  if (tab === 'admin') loadRecords();
+};
 
-function submitForm() {
+window.submitForm = async function() {
   const placa = document.getElementById('placa').value.trim();
   const km = document.getElementById('km').value.trim();
   const data = document.getElementById('data').value;
   const motorista = document.getElementById('motorista').value.trim();
   if (!placa || !km || !data || !motorista) { showToast('Preencha placa, KM, data e motorista.', 'red'); return; }
-  const allFilled = ITEMS.every(i => state[i] !== null);
-  if (!allFilled) { showToast('Marque BOM ou RUIM em todos os itens.', 'red'); return; }
+  if (!ITEMS.every(i => state[i] !== null)) { showToast('Marque BOM ou RUIM em todos os itens.', 'red'); return; }
 
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; btn.textContent = 'Enviando...';
 
-  const record = {
-    id: Date.now(),
-    placa: placa.toUpperCase(), km, data,
-    motorista,
-    responsavel: document.getElementById('responsavel').value.trim(),
-    obs: document.getElementById('obs').value.trim(),
-    checks: { ...state }
-  };
-
-  const arr = getRecords();
-  arr.unshift(record);
-  saveRecords(arr);
-
-  showToast('Checklist enviado com sucesso!', 'green');
-  resetForm();
+  try {
+    await addDoc(collection(db, 'checklists'), {
+      placa: placa.toUpperCase(), km, data, motorista,
+      responsavel: document.getElementById('responsavel').value.trim(),
+      obs: document.getElementById('obs').value.trim(),
+      checks: { ...state },
+      criadoEm: new Date().toISOString()
+    });
+    showToast('Checklist enviado com sucesso!', 'green');
+    resetForm();
+  } catch(e) {
+    showToast('Erro ao enviar. Verifique a conexão.', 'red');
+    console.error(e);
+  }
   btn.disabled = false; btn.textContent = 'Enviar checklist';
-}
+};
 
 function resetForm() {
   ['placa','km','motorista','responsavel','obs'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('data').valueAsDate = new Date();
   ITEMS.forEach(i => state[i] = null);
   document.querySelectorAll('.opt').forEach(b => b.classList.remove('sel'));
-  updateProgress();
+  document.getElementById('prog-fill').style.width = '0%';
+  document.getElementById('prog-label').textContent = `0 de ${ITEMS.length} itens verificados`;
 }
 
+async function loadRecords() {
+  document.getElementById('records-list').innerHTML = '<div class="loading">Carregando registros...</div>';
+  try {
+    const q = query(collection(db, 'checklists'), orderBy('criadoEm', 'desc'));
+    const snap = await getDocs(q);
+    allRecords = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    updateStats();
+    applyFilters();
+  } catch(e) {
+    document.getElementById('records-list').innerHTML = '<div class="empty">Erro ao carregar. Verifique a conexão.</div>';
+    console.error(e);
+  }
+}
+
+function updateStats() {
+  const hoje = new Date().toISOString().split('T')[0];
+  const total = allRecords.length;
+  const hj = allRecords.filter(r => r.data === hoje).length;
+  const ruins = allRecords.filter(r => Object.values(r.checks || {}).some(v => v === 'ruim')).length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-hoje').textContent = hj;
+  document.getElementById('stat-ruins').textContent = ruins;
+}
+
+window.applyFilters = function() {
+  const placa = document.getElementById('filter-placa').value.trim().toUpperCase();
+  const data = document.getElementById('filter-data').value;
+  const status = document.getElementById('filter-status').value;
+  filteredRecords = allRecords.filter(r => {
+    if (placa && !r.placa.includes(placa)) return false;
+    if (data && r.data !== data) return false;
+    if (status === 'ok' && Object.values(r.checks || {}).some(v => v === 'ruim')) return false;
+    if (status === 'warn' && !Object.values(r.checks || {}).some(v => v === 'ruim')) return false;
+    return true;
+  });
+  renderRecords();
+};
+
+window.clearFilters = function() {
+  document.getElementById('filter-placa').value = '';
+  document.getElementById('filter-data').value = '';
+  document.getElementById('filter-status').value = '';
+  applyFilters();
+};
+
 function renderRecords() {
-  const arr = getRecords();
   const list = document.getElementById('records-list');
-  document.getElementById('rec-count').textContent = `${arr.length} registro${arr.length !== 1 ? 's' : ''}`;
-  if (!arr.length) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>Nenhum checklist enviado ainda.</div>';
+  document.getElementById('rec-count').textContent = `${filteredRecords.length} registro${filteredRecords.length !== 1 ? 's' : ''}`;
+  if (!filteredRecords.length) {
+    list.innerHTML = '<div class="empty">Nenhum registro encontrado.</div>';
     return;
   }
-  list.innerHTML = arr.map((r, idx) => {
-    const ruins = Object.values(r.checks).filter(v => v === 'ruim').length;
+  list.innerHTML = filteredRecords.map((r, idx) => {
+    const ruins = Object.values(r.checks || {}).filter(v => v === 'ruim').length;
     const dateStr = r.data ? r.data.split('-').reverse().join('/') : '';
     const badgeCls = ruins > 0 ? 'badge-warn' : 'badge-ok';
     const badgeTxt = ruins > 0 ? `${ruins} item${ruins > 1 ? 's' : ''} ruim` : 'Tudo ok';
-    const checksHtml = Object.entries(r.checks).map(([k, v]) =>
+    const checksHtml = Object.entries(r.checks || {}).map(([k, v]) =>
       `<div class="rc"><span class="rc-name">${k}</span><span class="${v === 'bom' ? 'rc-bom' : 'rc-ruim'}">${v === 'bom' ? 'Bom' : 'Ruim'}</span></div>`
     ).join('');
     return `<div class="record-card">
@@ -269,7 +335,7 @@ function renderRecords() {
         </div>
         <div class="record-right">
           <span class="badge ${badgeCls}">${badgeTxt}</span>
-          <button class="del-btn" onclick="event.stopPropagation();deleteRec(${r.id})">Excluir</button>
+          <button class="del-btn" onclick="event.stopPropagation();deleteRec('${r.id}')">Excluir</button>
           <span class="chevron" id="chev-${idx}">▼</span>
         </div>
       </div>
@@ -282,25 +348,24 @@ function renderRecords() {
   }).join('');
 }
 
-function toggleRec(idx) {
+window.toggleRec = function(idx) {
   const body = document.getElementById('rbody-' + idx);
   const chev = document.getElementById('chev-' + idx);
   const isOpen = body.style.display === 'block';
   body.style.display = isOpen ? 'none' : 'block';
   chev.classList.toggle('open', !isOpen);
-}
+};
 
-function deleteRec(id) {
-  if (!confirm('Excluir este registro?')) return;
-  saveRecords(getRecords().filter(r => r.id !== id));
-  renderRecords();
-}
-
-function clearAll() {
-  if (!confirm('Excluir TODOS os registros? Esta ação não pode ser desfeita.')) return;
-  localStorage.removeItem('cl_records');
-  renderRecords();
-}
+window.deleteRec = async function(id) {
+  if (!confirm('Excluir este registro permanentemente?')) return;
+  try {
+    await deleteDoc(doc(db, 'checklists', id));
+    showToast('Registro excluído.', '');
+    loadRecords();
+  } catch(e) {
+    showToast('Erro ao excluir.', 'red');
+  }
+};
 </script>
 </body>
 </html>
