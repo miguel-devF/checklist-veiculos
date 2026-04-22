@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist de Segurança dos Veículos</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green: #1D9E75; --green-dark: #0F6E56; --green-light: #EAF3DE; --green-text: #3B6D11;
+    --red-light: #FCEBEB; --red-text: #A32D2D;
+    --bg: #f5f5f3; --surface: #ffffff; --border: rgba(0,0,0,0.12);
+    --text: #1a1a1a; --muted: #666;
+    --radius: 10px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+  header svg { width: 28px; height: 28px; color: var(--green); }
+  header h1 { font-size: 15px; font-weight: 600; color: var(--text); }
+  header span { font-size: 12px; color: var(--muted); margin-left: auto; }
+  .nav { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); }
+  .nav-btn { flex: 1; padding: 12px; font-size: 13px; font-weight: 500; border: none; background: none; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.15s; font-family: inherit; }
+  .nav-btn.active { color: var(--green); border-bottom-color: var(--green); }
+  .container { max-width: 680px; margin: 0 auto; padding: 20px 16px; }
+  .section { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 16px; margin-bottom: 14px; }
+  .section-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 14px; }
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .field-grid.two { grid-template-columns: 1fr 1fr; }
+  @media(max-width:480px) { .field-grid, .field-grid.two { grid-template-columns: 1fr; } }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 11px; font-weight: 600; color: var(--muted); }
+  .field input, .field textarea { font-family: inherit; font-size: 14px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: #fafaf9; color: var(--text); width: 100%; outline: none; transition: border-color 0.15s; }
+  .field input:focus, .field textarea:focus { border-color: var(--green); background: #fff; }
+  .field textarea { resize: vertical; min-height: 80px; }
+  .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  @media(max-width:520px) { .check-grid { grid-template-columns: 1fr; } }
+  .check-item { display: flex; align-items: center; justify-content: space-between; padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px; background: #fafaf9; gap: 8px; }
+  .check-label { font-size: 12px; color: var(--text); flex: 1; }
+  .check-opts { display: flex; gap: 4px; flex-shrink: 0; }
+  .opt { padding: 4px 11px; font-size: 11px; font-weight: 500; border: 1px solid var(--border); border-radius: 20px; cursor: pointer; background: var(--surface); color: var(--muted); font-family: inherit; transition: all 0.12s; white-space: nowrap; }
+  .opt.bom.sel { background: var(--green-light); color: var(--green-text); border-color: var(--green-text); }
+  .opt.ruim.sel { background: var(--red-light); color: var(--red-text); border-color: var(--red-text); }
+  .submit-btn { width: 100%; padding: 14px; background: var(--green); color: #fff; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; margin-top: 4px; }
+  .submit-btn:hover { background: var(--green-dark); }
+  .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
+  .progress-bar { height: 4px; background: #e0e0e0; border-radius: 4px; margin-bottom: 14px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--green); border-radius: 4px; transition: width 0.3s; }
+  .progress-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .records-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .records-count { font-size: 13px; color: var(--muted); }
+  .clear-btn { font-size: 12px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; background: none; color: var(--muted); font-family: inherit; }
+  .record-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
+  .record-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; cursor: pointer; }
+  .record-info { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+  .record-placa { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: 0.03em; }
+  .record-meta { font-size: 12px; color: var(--muted); }
+  .record-right { display: flex; align-items: center; gap: 8px; }
+  .badge { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+  .badge-ok { background: var(--green-light); color: var(--green-text); }
+  .badge-warn { background: var(--red-light); color: var(--red-text); }
+  .chevron { font-size: 11px; color: var(--muted); transition: transform 0.2s; }
+  .chevron.open { transform: rotate(180deg); }
+  .record-body { border-top: 1px solid var(--border); padding: 14px; background: #fafaf9; display: none; }
+  .rec-checks { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-bottom: 12px; }
+  @media(max-width:480px) { .rec-checks { grid-template-columns: 1fr; } }
+  .rc { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; border-bottom: 1px solid var(--border); }
+  .rc:last-child { border-bottom: none; }
+  .rc-name { color: var(--muted); }
+  .rc-bom { color: var(--green-text); font-weight: 600; }
+  .rc-ruim { color: var(--red-text); font-weight: 600; }
+  .del-btn { font-size: 11px; padding: 4px 9px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; background: none; color: var(--muted); font-family: inherit; }
+  .del-btn:hover { background: var(--red-light); color: var(--red-text); border-color: var(--red-text); }
+  .obs-label { font-size: 11px; color: var(--muted); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .obs-box { font-size: 13px; background: var(--surface); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); white-space: pre-wrap; color: var(--text); }
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 14px; }
+  .empty-icon { font-size: 36px; margin-bottom: 10px; }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(60px); background: #222; color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 500; transition: transform 0.3s; z-index: 999; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.green { background: var(--green); }
+  .toast.red { background: var(--red-text); }
+  .resp-info { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+  .resp-info strong { color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+  <h1>Checklist de Segurança</h1>
+  <span id="header-date"></span>
+</header>
+
+<div class="nav">
+  <button class="nav-btn active" id="btn-form" onclick="showTab('form')">Preencher</button>
+  <button class="nav-btn" id="btn-admin" onclick="showTab('admin')">Registros</button>
+</div>
+
+<div id="tab-form">
+  <div class="container">
+    <div class="section">
+      <div class="section-title">Dados do veículo</div>
+      <div class="field-grid" style="margin-bottom:10px">
+        <div class="field"><label>Placa</label><input id="placa" placeholder="ABC-1234" style="text-transform:uppercase"></div>
+        <div class="field"><label>KM Atual</label><input id="km" type="number" placeholder="00000" min="0"></div>
+        <div class="field"><label>Data</label><input id="data" type="date"></div>
+      </div>
+      <div class="field-grid two">
+        <div class="field"><label>Motorista</label><input id="motorista" placeholder="Nome completo"></div>
+        <div class="field"><label>Responsável pelo checklist</label><input id="responsavel" placeholder="Nome do responsável"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Itens a verificar antes da saída</div>
+      <div class="progress-label" id="prog-label">0 de 22 itens verificados</div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="check-grid" id="check-grid"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Observações de segurança</div>
+      <div class="field"><textarea id="obs" placeholder="Descreva qualquer item que precise de atenção ou manutenção..."></textarea></div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="submitForm()">Enviar checklist</button>
+  </div>
+</div>
+
+<div id="tab-admin" style="display:none">
+  <div class="container">
+    <div class="records-header">
+      <div class="records-count" id="rec-count"></div>
+      <button class="clear-btn" onclick="clearAll()">Limpar todos</button>
+    </div>
+    <div id="records-list"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ITEMS = [
+  "Cinto de segurança","Espelhos retrovisores","Faróis","Setas","Lanternas",
+  "Faroletes","Buzina","Reservatório de água","Limpeza externa","Limpeza interna",
+  "Óleo motor (nível)","Freios (pedal)","Combustível","Para-brisa (limpador/lavador)",
+  "Calibração de pneus","Estepe","Macaco e chave de rodas","Odômetro",
+  "Lanternas traseiras","Faroletes traseiros","Freio de mão","Para-choque"
+];
+
+const state = {};
+ITEMS.forEach(i => state[i] = null);
+
+// Data de hoje
+const today = new Date();
+document.getElementById('data').valueAsDate = today;
+document.getElementById('header-date').textContent = today.toLocaleDateString('pt-BR', {weekday:'short', day:'2-digit', month:'short'});
+
+// Gera o grid de itens
+const grid = document.getElementById('check-grid');
+ITEMS.forEach(item => {
+  const div = document.createElement('div');
+  div.className = 'check-item';
+  const safe = item.replace(/'/g,"&#39;");
+  div.innerHTML = `<span class="check-label">${item}</span>
+    <div class="check-opts">
+      <button class="opt bom" onclick="pick(this,'${safe}','bom')">Bom</button>
+      <button class="opt ruim" onclick="pick(this,'${safe}','ruim')">Ruim</button>
+    </div>`;
+  grid.appendChild(div);
+});
+
+function updateProgress() {
+  const filled = ITEMS.filter(i => state[i] !== null).length;
+  const pct = Math.round((filled / ITEMS.length) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = `${filled} de ${ITEMS.length} itens verificados`;
+}
+
+function pick(btn, item, val) {
+  const decoded = item.replace(/&#39;/g, "'");
+  const opts = btn.closest('.check-opts');
+  opts.querySelectorAll('.opt').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  state[decoded] = val;
+  updateProgress();
+}
+
+function showTab(tab) {
+  document.getElementById('tab-form').style.display = tab === 'form' ? '' : 'none';
+  document.getElementById('tab-admin').style.display = tab === 'admin' ? '' : 'none';
+  document.getElementById('btn-form').classList.toggle('active', tab === 'form');
+  document.getElementById('btn-admin').classList.toggle('active', tab === 'admin');
+  if (tab === 'admin') renderRecords();
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function getRecords() {
+  try { return JSON.parse(localStorage.getItem('cl_records') || '[]'); } catch { return []; }
+}
+function saveRecords(arr) {
+  localStorage.setItem('cl_records', JSON.stringify(arr));
+}
+
+function submitForm() {
+  const placa = document.getElementById('placa').value.trim();
+  const km = document.getElementById('km').value.trim();
+  const data = document.getElementById('data').value;
+  const motorista = document.getElementById('motorista').value.trim();
+  if (!placa || !km || !data || !motorista) { showToast('Preencha placa, KM, data e motorista.', 'red'); return; }
+  const allFilled = ITEMS.every(i => state[i] !== null);
+  if (!allFilled) { showToast('Marque BOM ou RUIM em todos os itens.', 'red'); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = 'Enviando...';
+
+  const record = {
+    id: Date.now(),
+    placa: placa.toUpperCase(), km, data,
+    motorista,
+    responsavel: document.getElementById('responsavel').value.trim(),
+    obs: document.getElementById('obs').value.trim(),
+    checks: { ...state }
+  };
+
+  const arr = getRecords();
+  arr.unshift(record);
+  saveRecords(arr);
+
+  showToast('Checklist enviado com sucesso!', 'green');
+  resetForm();
+  btn.disabled = false; btn.textContent = 'Enviar checklist';
+}
+
+function resetForm() {
+  ['placa','km','motorista','responsavel','obs'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('data').valueAsDate = new Date();
+  ITEMS.forEach(i => state[i] = null);
+  document.querySelectorAll('.opt').forEach(b => b.classList.remove('sel'));
+  updateProgress();
+}
+
+function renderRecords() {
+  const arr = getRecords();
+  const list = document.getElementById('records-list');
+  document.getElementById('rec-count').textContent = `${arr.length} registro${arr.length !== 1 ? 's' : ''}`;
+  if (!arr.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>Nenhum checklist enviado ainda.</div>';
+    return;
+  }
+  list.innerHTML = arr.map((r, idx) => {
+    const ruins = Object.values(r.checks).filter(v => v === 'ruim').length;
+    const dateStr = r.data ? r.data.split('-').reverse().join('/') : '';
+    const badgeCls = ruins > 0 ? 'badge-warn' : 'badge-ok';
+    const badgeTxt = ruins > 0 ? `${ruins} item${ruins > 1 ? 's' : ''} ruim` : 'Tudo ok';
+    const checksHtml = Object.entries(r.checks).map(([k, v]) =>
+      `<div class="rc"><span class="rc-name">${k}</span><span class="${v === 'bom' ? 'rc-bom' : 'rc-ruim'}">${v === 'bom' ? 'Bom' : 'Ruim'}</span></div>`
+    ).join('');
+    return `<div class="record-card">
+      <div class="record-head" onclick="toggleRec(${idx})">
+        <div class="record-info">
+          <span class="record-placa">${r.placa}</span>
+          <span class="record-meta">${r.motorista} &mdash; ${dateStr} &mdash; ${Number(r.km).toLocaleString('pt-BR')} km</span>
+        </div>
+        <div class="record-right">
+          <span class="badge ${badgeCls}">${badgeTxt}</span>
+          <button class="del-btn" onclick="event.stopPropagation();deleteRec(${r.id})">Excluir</button>
+          <span class="chevron" id="chev-${idx}">▼</span>
+        </div>
+      </div>
+      <div class="record-body" id="rbody-${idx}">
+        ${r.responsavel ? `<div class="resp-info">Responsável: <strong>${r.responsavel}</strong></div>` : ''}
+        <div class="rec-checks">${checksHtml}</div>
+        ${r.obs ? `<div class="obs-label">Observações</div><div class="obs-box">${r.obs}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleRec(idx) {
+  const body = document.getElementById('rbody-' + idx);
+  const chev = document.getElementById('chev-' + idx);
+  const isOpen = body.style.display === 'block';
+  body.style.display = isOpen ? 'none' : 'block';
+  chev.classList.toggle('open', !isOpen);
+}
+
+function deleteRec(id) {
+  if (!confirm('Excluir este registro?')) return;
+  saveRecords(getRecords().filter(r => r.id !== id));
+  renderRecords();
+}
+
+function clearAll() {
+  if (!confirm('Excluir TODOS os registros? Esta ação não pode ser desfeita.')) return;
+  localStorage.removeItem('cl_records');
+  renderRecords();
+}
+</script>
+</body>
+</html>
