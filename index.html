@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>COOPRAM - Checklist de Segurança dos Veículos</title>
+<title>COOPRAM - Checklist de Segurança</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -13,22 +13,25 @@
     --text: #1a1a1a; --muted: #666; --radius: 10px;
   }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
-  header svg { width: 26px; height: 26px; color: var(--green); flex-shrink: 0; }
-  header h1 { font-size: 15px; font-weight: 600; }
-  .nav { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); }
-  .nav-btn { flex: 1; padding: 12px; font-size: 13px; font-weight: 500; border: none; background: none; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.15s; font-family: inherit; }
+  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+  header svg { width: 24px; height: 24px; color: var(--green); flex-shrink: 0; }
+  .header-brand { display: flex; flex-direction: column; gap: 1px; }
+  .header-brand span:first-child { font-size: 13px; font-weight: 700; color: var(--green); letter-spacing: 0.05em; }
+  .header-brand span:last-child { font-size: 11px; color: var(--muted); }
+  .nav { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); overflow-x: auto; }
+  .nav-btn { flex: 1; min-width: 100px; padding: 11px 8px; font-size: 12px; font-weight: 500; border: none; background: none; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.15s; font-family: inherit; white-space: nowrap; }
   .nav-btn.active { color: var(--green); border-bottom-color: var(--green); }
   .container { max-width: 680px; margin: 0 auto; padding: 20px 16px; }
   .section { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 16px; margin-bottom: 14px; }
   .section-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 14px; }
   .field-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
   .field-grid.two { grid-template-columns: 1fr 1fr; }
+  .field-grid.one { grid-template-columns: 1fr; }
   @media(max-width:480px) { .field-grid, .field-grid.two { grid-template-columns: 1fr; } }
   .field { display: flex; flex-direction: column; gap: 5px; }
   .field label { font-size: 11px; font-weight: 600; color: var(--muted); }
-  .field input, .field textarea { font-family: inherit; font-size: 14px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: #fafaf9; color: var(--text); width: 100%; outline: none; transition: border-color 0.15s; }
-  .field input:focus, .field textarea:focus { border-color: var(--green); background: #fff; }
+  .field input, .field textarea, .field select { font-family: inherit; font-size: 14px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: #fafaf9; color: var(--text); width: 100%; outline: none; transition: border-color 0.15s; }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--green); background: #fff; }
   .field textarea { resize: vertical; min-height: 80px; }
   .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   @media(max-width:520px) { .check-grid { grid-template-columns: 1fr; } }
@@ -44,13 +47,25 @@
   .submit-btn { width: 100%; padding: 14px; background: var(--green); color: #fff; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; margin-top: 4px; }
   .submit-btn:hover { background: var(--green-dark); }
   .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
+  /* Boletim */
+  .trip-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .trip-card { background: #fafaf9; border: 1px solid var(--border); border-radius: 8px; padding: 12px; position: relative; }
+  .trip-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .trip-num { font-size: 11px; font-weight: 600; color: var(--green); }
+  .remove-trip { font-size: 11px; padding: 3px 8px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; background: none; color: var(--muted); font-family: inherit; }
+  .remove-trip:hover { background: var(--red-light); color: var(--red-text); border-color: var(--red-text); }
+  .add-trip-btn { width: 100%; padding: 10px; background: none; border: 1px dashed var(--green); border-radius: 8px; color: var(--green); font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.15s; margin-bottom: 14px; }
+  .add-trip-btn:hover { background: var(--green-light); }
+  /* Admin / Registros */
   .filters { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
   .filters input, .filters select { font-family: inherit; font-size: 13px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); outline: none; flex: 1; min-width: 120px; }
   .filters input:focus, .filters select:focus { border-color: var(--green); }
   .clear-filters { font-size: 12px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; background: none; color: var(--muted); font-family: inherit; white-space: nowrap; }
   .records-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
   .records-count { font-size: 13px; color: var(--muted); }
-  .clear-btn { font-size: 12px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; background: none; color: var(--muted); font-family: inherit; }
+  .tab-toggle { display: flex; gap: 6px; margin-bottom: 14px; }
+  .tab-toggle button { flex: 1; padding: 8px; font-size: 12px; font-weight: 500; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; background: none; color: var(--muted); font-family: inherit; transition: all 0.15s; }
+  .tab-toggle button.active { background: var(--green-light); color: var(--green-text); border-color: var(--green-text); }
   .record-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
   .record-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; cursor: pointer; gap: 10px; }
   .record-info { display: flex; flex-direction: column; gap: 3px; flex: 1; }
@@ -60,6 +75,7 @@
   .badge { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
   .badge-ok { background: var(--green-light); color: var(--green-text); }
   .badge-warn { background: var(--red-light); color: var(--red-text); }
+  .badge-blue { background: #E8F0FE; color: #1a56b0; }
   .chevron { font-size: 11px; color: var(--muted); transition: transform 0.2s; }
   .chevron.open { transform: rotate(180deg); }
   .record-body { border-top: 1px solid var(--border); padding: 14px; background: #fafaf9; display: none; }
@@ -74,32 +90,40 @@
   .obs-label { font-size: 11px; color: var(--muted); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
   .obs-box { font-size: 13px; background: var(--surface); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); white-space: pre-wrap; color: var(--text); }
   .empty { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 14px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 14px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--text); }
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .trip-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .trip-table th { background: var(--green-light); color: var(--green-text); padding: 6px 8px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  .trip-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .trip-table tr:last-child td { border-bottom: none; }
+  .resp-info { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+  .resp-info strong { color: var(--text); }
   .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px); background: #222; color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 500; transition: transform 0.3s; z-index: 999; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast.green { background: var(--green); }
   .toast.red { background: var(--red-text); }
   .loading { text-align: center; padding: 2rem; color: var(--muted); font-size: 13px; }
-  .resp-info { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
-  .resp-info strong { color: var(--text); }
-  .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 14px; }
-  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; text-align: center; }
-  .stat-num { font-size: 22px; font-weight: 700; color: var(--text); }
-  .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
 </style>
 </head>
 <body>
 
 <header>
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-  <div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:700;color:var(--green);letter-spacing:0.05em">COOPRAM</span><span style="font-size:12px;color:var(--muted)">Checklist de Segurança dos Veículos</span></div>
+  <div class="header-brand">
+    <span>COOPRAM</span>
+    <span>Checklist de Segurança dos Veículos</span>
+  </div>
 </header>
 
 <div class="nav">
-  <button class="nav-btn active" id="btn-form" onclick="showTab('form')">Preencher</button>
-  <button class="nav-btn" id="btn-admin" onclick="showTab('admin')">Registros</button>
+  <button class="nav-btn active" id="btn-form" onclick="showTab('form')">✅ Checklist</button>
+  <button class="nav-btn" id="btn-boletim" onclick="showTab('boletim')">🚗 Boletim</button>
+  <button class="nav-btn" id="btn-admin" onclick="showTab('admin')">📋 Registros</button>
 </div>
 
-<!-- FORMULÁRIO -->
+<!-- ===== CHECKLIST ===== -->
 <div id="tab-form">
   <div class="container">
     <div class="section">
@@ -122,40 +146,86 @@
     </div>
     <div class="section">
       <div class="section-title">Observações de segurança</div>
-      <div class="field"><textarea id="obs" placeholder="Descreva qualquer item que precise de atenção ou manutenção..."></textarea></div>
+      <div class="field one"><textarea id="obs" placeholder="Descreva qualquer item que precise de atenção ou manutenção..."></textarea></div>
     </div>
-    <button class="submit-btn" id="submit-btn" onclick="submitForm()">Enviar checklist</button>
+    <button class="submit-btn" id="submit-btn" onclick="submitChecklist()">Enviar checklist</button>
   </div>
 </div>
 
-<!-- PAINEL ADMIN -->
+<!-- ===== BOLETIM DE TRÁFEGO ===== -->
+<div id="tab-boletim" style="display:none">
+  <div class="container">
+    <div class="section">
+      <div class="section-title">Dados do veículo</div>
+      <div class="field-grid" style="margin-bottom:10px">
+        <div class="field"><label>Veículo</label><input id="b-veiculo" placeholder="Nome/modelo"></div>
+        <div class="field"><label>Placa</label><input id="b-placa" placeholder="ABC-1234" style="text-transform:uppercase"></div>
+        <div class="field"><label>Peso Bruto</label><input id="b-peso" placeholder="Ex: 3.500 kg"></div>
+      </div>
+      <div class="field-grid two">
+        <div class="field"><label>Motorista</label><input id="b-motorista" placeholder="Nome completo"></div>
+        <div class="field"><label>Semana de referência</label><input id="b-semana" type="date"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Viagens da semana</div>
+      <div class="trip-list" id="trip-list"></div>
+      <button class="add-trip-btn" onclick="addTrip()">+ Adicionar viagem</button>
+    </div>
+
+    <button class="submit-btn" id="submit-boletim-btn" onclick="submitBoletim()">Enviar boletim</button>
+  </div>
+</div>
+
+<!-- ===== REGISTROS ===== -->
 <div id="tab-admin" style="display:none">
   <div class="container">
-    <div class="stat-grid">
-      <div class="stat"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Total de registros</div></div>
-      <div class="stat"><div class="stat-num" id="stat-hoje">—</div><div class="stat-label">Hoje</div></div>
-      <div class="stat"><div class="stat-num" id="stat-ruins" style="color:var(--red-text)">—</div><div class="stat-label">Com itens ruins</div></div>
+    <div class="tab-toggle">
+      <button class="active" id="rec-btn-check" onclick="switchRec('check')">✅ Checklists</button>
+      <button id="rec-btn-boletim" onclick="switchRec('boletim')">🚗 Boletins</button>
     </div>
-    <div class="filters">
-      <input id="filter-placa" placeholder="Filtrar por placa..." oninput="applyFilters()">
-      <input id="filter-data" type="date" onchange="applyFilters()" title="Filtrar por data">
-      <select id="filter-status" onchange="applyFilters()">
-        <option value="">Todos os status</option>
-        <option value="ok">Tudo ok</option>
-        <option value="warn">Com itens ruins</option>
-      </select>
-      <button class="clear-filters" onclick="clearFilters()">Limpar filtros</button>
+
+    <!-- Checklists -->
+    <div id="rec-check-panel">
+      <div class="stat-grid">
+        <div class="stat"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Total</div></div>
+        <div class="stat"><div class="stat-num" id="stat-hoje">—</div><div class="stat-label">Hoje</div></div>
+        <div class="stat"><div class="stat-num" id="stat-ruins" style="color:var(--red-text)">—</div><div class="stat-label">Com itens ruins</div></div>
+      </div>
+      <div class="filters">
+        <input id="filter-placa" placeholder="Filtrar por placa..." oninput="applyFilters()">
+        <input id="filter-data" type="date" onchange="applyFilters()">
+        <select id="filter-status" onchange="applyFilters()">
+          <option value="">Todos os status</option>
+          <option value="ok">Tudo ok</option>
+          <option value="warn">Com itens ruins</option>
+        </select>
+        <button class="clear-filters" onclick="clearFilters()">Limpar</button>
+      </div>
+      <div class="records-header">
+        <div class="records-count" id="rec-count"></div>
+      </div>
+      <div id="records-list"><div class="loading">Carregando...</div></div>
     </div>
-    <div class="records-header">
-      <div class="records-count" id="rec-count"></div>
+
+    <!-- Boletins -->
+    <div id="rec-boletim-panel" style="display:none">
+      <div class="filters">
+        <input id="filter-b-placa" placeholder="Filtrar por placa..." oninput="applyBoletimFilters()">
+        <input id="filter-b-data" type="date" onchange="applyBoletimFilters()">
+        <button class="clear-filters" onclick="clearBoletimFilters()">Limpar</button>
+      </div>
+      <div class="records-header">
+        <div class="records-count" id="rec-boletim-count"></div>
+      </div>
+      <div id="boletim-list"><div class="loading">Carregando...</div></div>
     </div>
-    <div id="records-list"><div class="loading">Carregando registros...</div></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -182,14 +252,15 @@ const ITEMS = [
 
 const state = {};
 ITEMS.forEach(i => state[i] = null);
+let allRecords = [], filteredRecords = [], allBoletins = [], filteredBoletins = [];
+let tripCount = 0;
+let currentRecTab = 'check';
 
-let allRecords = [];
-let filteredRecords = [];
-
-// Data de hoje
+// Init
 document.getElementById('data').valueAsDate = new Date();
+document.getElementById('b-semana').valueAsDate = new Date();
 
-// Monta o grid de itens
+// Build checklist grid
 const grid = document.getElementById('check-grid');
 ITEMS.forEach(item => {
   const div = document.createElement('div');
@@ -205,90 +276,160 @@ ITEMS.forEach(item => {
 
 window._pick = function(btn, item, val) {
   const decoded = item.replace(/&#39;/g, "'");
-  const opts = btn.closest('.check-opts');
-  opts.querySelectorAll('.opt').forEach(b => b.classList.remove('sel'));
+  btn.closest('.check-opts').querySelectorAll('.opt').forEach(b => b.classList.remove('sel'));
   btn.classList.add('sel');
   state[decoded] = val;
   const filled = ITEMS.filter(i => state[i] !== null).length;
-  const pct = Math.round((filled / ITEMS.length) * 100);
-  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-fill').style.width = Math.round((filled/ITEMS.length)*100) + '%';
   document.getElementById('prog-label').textContent = `${filled} de ${ITEMS.length} itens verificados`;
 };
 
+// Toast
 function showToast(msg, type) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show ' + (type || '');
+  t.textContent = msg; t.className = 'toast show ' + (type||'');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
+// Tab navigation
 window.showTab = function(tab) {
-  document.getElementById('tab-form').style.display = tab === 'form' ? '' : 'none';
-  document.getElementById('tab-admin').style.display = tab === 'admin' ? '' : 'none';
-  document.getElementById('btn-form').classList.toggle('active', tab === 'form');
-  document.getElementById('btn-admin').classList.toggle('active', tab === 'admin');
-  if (tab === 'admin') loadRecords();
+  ['form','boletim','admin'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===tab ? '' : 'none';
+    document.getElementById('btn-'+t).classList.toggle('active', t===tab);
+  });
+  if (tab==='admin') { loadRecords(); loadBoletins(); }
 };
 
-window.submitForm = async function() {
+// Switch registros sub-tab
+window.switchRec = function(tab) {
+  currentRecTab = tab;
+  document.getElementById('rec-check-panel').style.display = tab==='check' ? '' : 'none';
+  document.getElementById('rec-boletim-panel').style.display = tab==='boletim' ? '' : 'none';
+  document.getElementById('rec-btn-check').classList.toggle('active', tab==='check');
+  document.getElementById('rec-btn-boletim').classList.toggle('active', tab==='boletim');
+};
+
+// ===== CHECKLIST =====
+window.submitChecklist = async function() {
   const placa = document.getElementById('placa').value.trim();
   const km = document.getElementById('km').value.trim();
   const data = document.getElementById('data').value;
   const motorista = document.getElementById('motorista').value.trim();
-  if (!placa || !km || !data || !motorista) { showToast('Preencha placa, KM, data e motorista.', 'red'); return; }
-  if (!ITEMS.every(i => state[i] !== null)) { showToast('Marque BOM ou RUIM em todos os itens.', 'red'); return; }
-
+  if (!placa||!km||!data||!motorista) { showToast('Preencha placa, KM, data e motorista.','red'); return; }
+  if (!ITEMS.every(i => state[i]!==null)) { showToast('Marque BOM ou RUIM em todos os itens.','red'); return; }
   const btn = document.getElementById('submit-btn');
-  btn.disabled = true; btn.textContent = 'Enviando...';
-
+  btn.disabled=true; btn.textContent='Enviando...';
   try {
-    await addDoc(collection(db, 'checklists'), {
+    await addDoc(collection(db,'checklists'), {
       placa: placa.toUpperCase(), km, data, motorista,
       responsavel: document.getElementById('responsavel').value.trim(),
       obs: document.getElementById('obs').value.trim(),
-      checks: { ...state },
-      criadoEm: new Date().toISOString()
+      checks: {...state}, criadoEm: new Date().toISOString()
     });
-    showToast('Checklist enviado com sucesso!', 'green');
-    resetForm();
-  } catch(e) {
-    showToast('Erro ao enviar. Verifique a conexão.', 'red');
-    console.error(e);
-  }
-  btn.disabled = false; btn.textContent = 'Enviar checklist';
+    showToast('Checklist enviado!','green');
+    resetChecklist();
+  } catch(e) { showToast('Erro ao enviar. Verifique a conexão.','red'); console.error(e); }
+  btn.disabled=false; btn.textContent='Enviar checklist';
 };
 
-function resetForm() {
-  ['placa','km','motorista','responsavel','obs'].forEach(id => document.getElementById(id).value = '');
+function resetChecklist() {
+  ['placa','km','motorista','responsavel','obs'].forEach(id => document.getElementById(id).value='');
   document.getElementById('data').valueAsDate = new Date();
-  ITEMS.forEach(i => state[i] = null);
+  ITEMS.forEach(i => state[i]=null);
   document.querySelectorAll('.opt').forEach(b => b.classList.remove('sel'));
-  document.getElementById('prog-fill').style.width = '0%';
-  document.getElementById('prog-label').textContent = `0 de ${ITEMS.length} itens verificados`;
+  document.getElementById('prog-fill').style.width='0%';
+  document.getElementById('prog-label').textContent=`0 de ${ITEMS.length} itens verificados`;
 }
 
-async function loadRecords() {
-  document.getElementById('records-list').innerHTML = '<div class="loading">Carregando registros...</div>';
+// ===== BOLETIM =====
+window.addTrip = function() {
+  tripCount++;
+  const idx = tripCount;
+  const div = document.createElement('div');
+  div.className = 'trip-card';
+  div.id = 'trip-'+idx;
+  div.innerHTML = `
+    <div class="trip-card-header">
+      <span class="trip-num">Viagem ${idx}</span>
+      <button class="remove-trip" onclick="removeTrip(${idx})">Remover</button>
+    </div>
+    <div class="field-grid two" style="margin-bottom:8px">
+      <div class="field"><label>Data</label><input type="date" id="t${idx}-data"></div>
+      <div class="field"><label>Produtor / Entidade</label><input id="t${idx}-produtor" placeholder="Nome do produtor ou entidade"></div>
+    </div>
+    <div class="field-grid one" style="margin-bottom:8px">
+      <div class="field"><label>Cargo / Serviço prestado</label><input id="t${idx}-cargo" placeholder="Descreva o cargo ou serviço prestado"></div>
+    </div>
+    <div class="field-grid two">
+      <div class="field"><label>Hodômetro saída (km)</label><input type="number" id="t${idx}-saida" placeholder="00000" min="0"></div>
+      <div class="field"><label>Hodômetro chegada (km)</label><input type="number" id="t${idx}-chegada" placeholder="00000" min="0"></div>
+    </div>`;
+  document.getElementById('trip-list').appendChild(div);
+  // set today
+  div.querySelector(`#t${idx}-data`).valueAsDate = new Date();
+};
+
+window.removeTrip = function(idx) {
+  const el = document.getElementById('trip-'+idx);
+  if (el) el.remove();
+};
+
+window.submitBoletim = async function() {
+  const veiculo = document.getElementById('b-veiculo').value.trim();
+  const placa = document.getElementById('b-placa').value.trim();
+  const motorista = document.getElementById('b-motorista').value.trim();
+  const semana = document.getElementById('b-semana').value;
+  if (!placa||!motorista||!semana) { showToast('Preencha placa, motorista e semana.','red'); return; }
+
+  // Collect trips
+  const trips = [];
+  document.querySelectorAll('.trip-card').forEach(card => {
+    const idx = card.id.replace('trip-','');
+    trips.push({
+      data: document.getElementById(`t${idx}-data`)?.value || '',
+      produtor: document.getElementById(`t${idx}-produtor`)?.value.trim() || '',
+      cargo: document.getElementById(`t${idx}-cargo`)?.value.trim() || '',
+      saida: document.getElementById(`t${idx}-saida`)?.value || '',
+      chegada: document.getElementById(`t${idx}-chegada`)?.value || '',
+    });
+  });
+
+  if (!trips.length) { showToast('Adicione ao menos uma viagem.','red'); return; }
+
+  const btn = document.getElementById('submit-boletim-btn');
+  btn.disabled=true; btn.textContent='Enviando...';
   try {
-    const q = query(collection(db, 'checklists'), orderBy('criadoEm', 'desc'));
-    const snap = await getDocs(q);
-    allRecords = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    updateStats();
-    applyFilters();
-  } catch(e) {
-    document.getElementById('records-list').innerHTML = '<div class="empty">Erro ao carregar. Verifique a conexão.</div>';
-    console.error(e);
-  }
+    await addDoc(collection(db,'boletins'), {
+      veiculo, placa: placa.toUpperCase(),
+      peso: document.getElementById('b-peso').value.trim(),
+      motorista, semana, trips, criadoEm: new Date().toISOString()
+    });
+    showToast('Boletim enviado!','green');
+    resetBoletim();
+  } catch(e) { showToast('Erro ao enviar.','red'); console.error(e); }
+  btn.disabled=false; btn.textContent='Enviar boletim';
+};
+
+function resetBoletim() {
+  ['b-veiculo','b-placa','b-peso','b-motorista'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('b-semana').valueAsDate = new Date();
+  document.getElementById('trip-list').innerHTML='';
+  tripCount=0;
 }
 
-function updateStats() {
-  const hoje = new Date().toISOString().split('T')[0];
-  const total = allRecords.length;
-  const hj = allRecords.filter(r => r.data === hoje).length;
-  const ruins = allRecords.filter(r => Object.values(r.checks || {}).some(v => v === 'ruim')).length;
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-hoje').textContent = hj;
-  document.getElementById('stat-ruins').textContent = ruins;
+// ===== REGISTROS - CHECKLISTS =====
+async function loadRecords() {
+  document.getElementById('records-list').innerHTML='<div class="loading">Carregando...</div>';
+  try {
+    const q = query(collection(db,'checklists'), orderBy('criadoEm','desc'));
+    const snap = await getDocs(q);
+    allRecords = snap.docs.map(d => ({id:d.id,...d.data()}));
+    const hoje = new Date().toISOString().split('T')[0];
+    document.getElementById('stat-total').textContent = allRecords.length;
+    document.getElementById('stat-hoje').textContent = allRecords.filter(r=>r.data===hoje).length;
+    document.getElementById('stat-ruins').textContent = allRecords.filter(r=>Object.values(r.checks||{}).some(v=>v==='ruim')).length;
+    applyFilters();
+  } catch(e) { document.getElementById('records-list').innerHTML='<div class="empty">Erro ao carregar.</div>'; }
 }
 
 window.applyFilters = function() {
@@ -297,74 +438,134 @@ window.applyFilters = function() {
   const status = document.getElementById('filter-status').value;
   filteredRecords = allRecords.filter(r => {
     if (placa && !r.placa.includes(placa)) return false;
-    if (data && r.data !== data) return false;
-    if (status === 'ok' && Object.values(r.checks || {}).some(v => v === 'ruim')) return false;
-    if (status === 'warn' && !Object.values(r.checks || {}).some(v => v === 'ruim')) return false;
+    if (data && r.data!==data) return false;
+    if (status==='ok' && Object.values(r.checks||{}).some(v=>v==='ruim')) return false;
+    if (status==='warn' && !Object.values(r.checks||{}).some(v=>v==='ruim')) return false;
     return true;
   });
   renderRecords();
 };
 
 window.clearFilters = function() {
-  document.getElementById('filter-placa').value = '';
-  document.getElementById('filter-data').value = '';
-  document.getElementById('filter-status').value = '';
+  ['filter-placa','filter-data'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('filter-status').value='';
   applyFilters();
 };
 
 function renderRecords() {
   const list = document.getElementById('records-list');
-  document.getElementById('rec-count').textContent = `${filteredRecords.length} registro${filteredRecords.length !== 1 ? 's' : ''}`;
-  if (!filteredRecords.length) {
-    list.innerHTML = '<div class="empty">Nenhum registro encontrado.</div>';
-    return;
-  }
-  list.innerHTML = filteredRecords.map((r, idx) => {
-    const ruins = Object.values(r.checks || {}).filter(v => v === 'ruim').length;
+  document.getElementById('rec-count').textContent = `${filteredRecords.length} registro${filteredRecords.length!==1?'s':''}`;
+  if (!filteredRecords.length) { list.innerHTML='<div class="empty">Nenhum registro encontrado.</div>'; return; }
+  list.innerHTML = filteredRecords.map((r,idx) => {
+    const ruins = Object.values(r.checks||{}).filter(v=>v==='ruim').length;
     const dateStr = r.data ? r.data.split('-').reverse().join('/') : '';
-    const badgeCls = ruins > 0 ? 'badge-warn' : 'badge-ok';
-    const badgeTxt = ruins > 0 ? `${ruins} item${ruins > 1 ? 's' : ''} ruim` : 'Tudo ok';
-    const checksHtml = Object.entries(r.checks || {}).map(([k, v]) =>
-      `<div class="rc"><span class="rc-name">${k}</span><span class="${v === 'bom' ? 'rc-bom' : 'rc-ruim'}">${v === 'bom' ? 'Bom' : 'Ruim'}</span></div>`
+    const checksHtml = Object.entries(r.checks||{}).map(([k,v])=>
+      `<div class="rc"><span class="rc-name">${k}</span><span class="${v==='bom'?'rc-bom':'rc-ruim'}">${v==='bom'?'Bom':'Ruim'}</span></div>`
     ).join('');
     return `<div class="record-card">
-      <div class="record-head" onclick="toggleRec(${idx})">
+      <div class="record-head" onclick="toggleRec('c${idx}')">
         <div class="record-info">
           <span class="record-placa">${r.placa}</span>
-          <span class="record-meta">${r.motorista} &mdash; ${dateStr} &mdash; ${Number(r.km).toLocaleString('pt-BR')} km</span>
+          <span class="record-meta">${r.motorista} — ${dateStr} — ${Number(r.km).toLocaleString('pt-BR')} km</span>
         </div>
         <div class="record-right">
-          <span class="badge ${badgeCls}">${badgeTxt}</span>
-          <button class="del-btn" onclick="event.stopPropagation();deleteRec('${r.id}')">Excluir</button>
-          <span class="chevron" id="chev-${idx}">▼</span>
+          <span class="badge ${ruins>0?'badge-warn':'badge-ok'}">${ruins>0?ruins+' ruim':'Tudo ok'}</span>
+          <button class="del-btn" onclick="event.stopPropagation();deleteRec('${r.id}','checklists')">Excluir</button>
+          <span class="chevron" id="chev-c${idx}">▼</span>
         </div>
       </div>
-      <div class="record-body" id="rbody-${idx}">
-        ${r.responsavel ? `<div class="resp-info">Responsável: <strong>${r.responsavel}</strong></div>` : ''}
+      <div class="record-body" id="rbody-c${idx}">
+        ${r.responsavel?`<div class="resp-info">Responsável: <strong>${r.responsavel}</strong></div>`:''}
         <div class="rec-checks">${checksHtml}</div>
-        ${r.obs ? `<div class="obs-label">Observações</div><div class="obs-box">${r.obs}</div>` : ''}
+        ${r.obs?`<div class="obs-label">Observações</div><div class="obs-box">${r.obs}</div>`:''}
       </div>
     </div>`;
   }).join('');
 }
 
-window.toggleRec = function(idx) {
-  const body = document.getElementById('rbody-' + idx);
-  const chev = document.getElementById('chev-' + idx);
-  const isOpen = body.style.display === 'block';
+// ===== REGISTROS - BOLETINS =====
+async function loadBoletins() {
+  document.getElementById('boletim-list').innerHTML='<div class="loading">Carregando...</div>';
+  try {
+    const q = query(collection(db,'boletins'), orderBy('criadoEm','desc'));
+    const snap = await getDocs(q);
+    allBoletins = snap.docs.map(d => ({id:d.id,...d.data()}));
+    applyBoletimFilters();
+  } catch(e) { document.getElementById('boletim-list').innerHTML='<div class="empty">Erro ao carregar.</div>'; }
+}
+
+window.applyBoletimFilters = function() {
+  const placa = document.getElementById('filter-b-placa').value.trim().toUpperCase();
+  const data = document.getElementById('filter-b-data').value;
+  filteredBoletins = allBoletins.filter(r => {
+    if (placa && !r.placa.includes(placa)) return false;
+    if (data && r.semana!==data) return false;
+    return true;
+  });
+  renderBoletins();
+};
+
+window.clearBoletimFilters = function() {
+  ['filter-b-placa','filter-b-data'].forEach(id=>document.getElementById(id).value='');
+  applyBoletimFilters();
+};
+
+function renderBoletins() {
+  const list = document.getElementById('boletim-list');
+  document.getElementById('rec-boletim-count').textContent = `${filteredBoletins.length} boletim${filteredBoletins.length!==1?'s':''}`;
+  if (!filteredBoletins.length) { list.innerHTML='<div class="empty">Nenhum boletim encontrado.</div>'; return; }
+  list.innerHTML = filteredBoletins.map((r,idx) => {
+    const semanaStr = r.semana ? r.semana.split('-').reverse().join('/') : '';
+    const tripsHtml = (r.trips||[]).map(t => {
+      const dataTrip = t.data ? t.data.split('-').reverse().join('/') : '—';
+      const km = (t.saida && t.chegada) ? (Number(t.chegada)-Number(t.saida)).toLocaleString('pt-BR')+' km' : '—';
+      return `<tr>
+        <td>${dataTrip}</td>
+        <td>${t.produtor||'—'}</td>
+        <td>${t.cargo||'—'}</td>
+        <td>${t.saida||'—'}</td>
+        <td>${t.chegada||'—'}</td>
+        <td>${km}</td>
+      </tr>`;
+    }).join('');
+    return `<div class="record-card">
+      <div class="record-head" onclick="toggleRec('b${idx}')">
+        <div class="record-info">
+          <span class="record-placa">${r.placa}</span>
+          <span class="record-meta">${r.motorista} — Semana: ${semanaStr} — ${r.trips?.length||0} viagem(ns)</span>
+        </div>
+        <div class="record-right">
+          <span class="badge badge-blue">${r.veiculo||'Veículo'}</span>
+          <button class="del-btn" onclick="event.stopPropagation();deleteRec('${r.id}','boletins')">Excluir</button>
+          <span class="chevron" id="chev-b${idx}">▼</span>
+        </div>
+      </div>
+      <div class="record-body" id="rbody-b${idx}" style="overflow-x:auto">
+        ${r.peso?`<div class="resp-info" style="margin-bottom:10px">Peso bruto: <strong>${r.peso}</strong></div>`:''}
+        <table class="trip-table">
+          <thead><tr><th>Data</th><th>Produtor/Entidade</th><th>Cargo/Serviço</th><th>KM Saída</th><th>KM Chegada</th><th>Total KM</th></tr></thead>
+          <tbody>${tripsHtml}</tbody>
+        </table>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.toggleRec = function(id) {
+  const body = document.getElementById('rbody-'+id);
+  const chev = document.getElementById('chev-'+id);
+  const isOpen = body.style.display==='block';
   body.style.display = isOpen ? 'none' : 'block';
   chev.classList.toggle('open', !isOpen);
 };
 
-window.deleteRec = async function(id) {
-  if (!confirm('Excluir este registro permanentemente?')) return;
+window.deleteRec = async function(id, col) {
+  if (!confirm('Excluir este registro?')) return;
   try {
-    await deleteDoc(doc(db, 'checklists', id));
-    showToast('Registro excluído.', '');
-    loadRecords();
-  } catch(e) {
-    showToast('Erro ao excluir.', 'red');
-  }
+    await deleteDoc(doc(db, col, id));
+    showToast('Excluído.','');
+    if (col==='checklists') loadRecords(); else loadBoletins();
+  } catch(e) { showToast('Erro ao excluir.','red'); }
 };
 </script>
 </body>
