@@ -105,6 +105,18 @@
   .toast.green { background: var(--green); }
   .toast.red { background: var(--red-text); }
   .loading { text-align: center; padding: 2rem; color: var(--muted); font-size: 13px; }
+  /* Modal senha */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .modal-box { background: var(--surface); border-radius: var(--radius); padding: 28px 24px; width: 100%; max-width: 340px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); }
+  .modal-icon { font-size: 32px; text-align: center; margin-bottom: 12px; }
+  .modal-title { font-size: 16px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 6px; }
+  .modal-sub { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 20px; }
+  .modal-input { width: 100%; font-family: inherit; font-size: 14px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: #fafaf9; color: var(--text); outline: none; margin-bottom: 10px; transition: border-color 0.15s; }
+  .modal-input:focus { border-color: var(--green); }
+  .modal-btn { width: 100%; padding: 12px; background: var(--green); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+  .modal-btn:hover { background: var(--green-dark); }
+  .modal-error { font-size: 12px; color: var(--red-text); text-align: center; margin-bottom: 10px; display: none; }
+  .modal-cancel { width: 100%; padding: 8px; background: none; border: none; color: var(--muted); font-size: 13px; cursor: pointer; font-family: inherit; margin-top: 6px; }
 </style>
 </head>
 <body>
@@ -224,6 +236,19 @@
   </div>
 </div>
 
+<!-- Modal de senha -->
+<div class="modal-overlay" id="senha-modal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-icon">🔒</div>
+    <div class="modal-title">Área restrita</div>
+    <div class="modal-sub">Digite a senha para acessar os registros</div>
+    <div class="modal-error" id="senha-erro">Senha incorreta. Tente novamente.</div>
+    <input class="modal-input" type="password" id="senha-input" placeholder="Digite a senha..." onkeydown="if(event.key==='Enter') confirmarSenha()">
+    <button class="modal-btn" onclick="confirmarSenha()">Entrar</button>
+    <button class="modal-cancel" onclick="fecharModal()">Cancelar</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script type="module">
@@ -291,13 +316,40 @@ function showToast(msg, type) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// Tab navigation
+// ===== SENHA =====
+const SENHA_CORRETA = 'coopram2026@$';
+let adminLiberado = false;
+
 window.showTab = function(tab) {
+  if (tab === 'admin' && !adminLiberado) {
+    document.getElementById('senha-modal').style.display = 'flex';
+    setTimeout(() => document.getElementById('senha-input').focus(), 100);
+    return;
+  }
   ['form','boletim','admin'].forEach(t => {
     document.getElementById('tab-'+t).style.display = t===tab ? '' : 'none';
     document.getElementById('btn-'+t).classList.toggle('active', t===tab);
   });
   if (tab==='admin') { loadRecords(); loadBoletins(); }
+};
+
+window.confirmarSenha = function() {
+  const val = document.getElementById('senha-input').value;
+  if (val === SENHA_CORRETA) {
+    adminLiberado = true;
+    fecharModal();
+    showTab('admin');
+  } else {
+    document.getElementById('senha-erro').style.display = 'block';
+    document.getElementById('senha-input').value = '';
+    document.getElementById('senha-input').focus();
+  }
+};
+
+window.fecharModal = function() {
+  document.getElementById('senha-modal').style.display = 'none';
+  document.getElementById('senha-input').value = '';
+  document.getElementById('senha-erro').style.display = 'none';
 };
 
 // Switch registros sub-tab
