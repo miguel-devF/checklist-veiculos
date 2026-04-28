@@ -56,6 +56,10 @@
   .remove-trip:hover { background: var(--red-light); color: var(--red-text); border-color: var(--red-text); }
   .add-trip-btn { width: 100%; padding: 10px; background: none; border: 1px dashed var(--green); border-radius: 8px; color: var(--green); font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.15s; margin-bottom: 14px; }
   .add-trip-btn:hover { background: var(--green-light); }
+  /* Centro de custos */
+  .cc-opts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+  .cc-btn { padding: 5px 14px; font-size: 12px; font-weight: 500; border: 1px solid var(--border); border-radius: 20px; cursor: pointer; background: var(--surface); color: var(--muted); font-family: inherit; transition: all 0.12s; }
+  .cc-btn.sel { background: #E8F0FE; color: #1a56b0; border-color: #1a56b0; font-weight: 600; }
   /* Admin / Registros */
   .filters { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
   .filters input, .filters select { font-family: inherit; font-size: 13px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); outline: none; flex: 1; min-width: 120px; }
@@ -155,10 +159,12 @@
       <div class="progress-label" id="prog-label">0 de 22 itens verificados</div>
       <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
       <div class="check-grid" id="check-grid"></div>
-    </div>
-    <div class="section">
-      <div class="section-title">Observações de segurança</div>
-      <div class="field one"><textarea id="obs" placeholder="Descreva qualquer item que precise de atenção ou manutenção..."></textarea></div>
+      <div style="margin-top:10px">
+        <div class="check-item" style="background:var(--red-light);border-color:#f5c6c6;flex-direction:column;align-items:flex-start;gap:6px">
+          <span class="check-label" style="color:var(--red-text);font-weight:600">⚠ Observações de itens com problema</span>
+          <textarea id="obs" placeholder="Descreva os itens marcados como RUIM ou qualquer situação que precise de atenção..." style="width:100%;font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid #f5c6c6;border-radius:8px;background:#fff;color:var(--text);outline:none;resize:vertical;min-height:70px;"></textarea>
+        </div>
+      </div>
     </div>
     <button class="submit-btn" id="submit-btn" onclick="submitChecklist()">Enviar checklist</button>
   </div>
@@ -412,6 +418,18 @@ window.addTrip = function() {
     <div class="field-grid one" style="margin-bottom:8px">
       <div class="field"><label>Cargo / Serviço prestado</label><input id="t${idx}-cargo" placeholder="Descreva o cargo ou serviço prestado"></div>
     </div>
+    <div class="field-grid one" style="margin-bottom:8px">
+      <div class="field">
+        <label>Centro de custos</label>
+        <div class="cc-opts" id="cc-${idx}">
+          <button type="button" class="cc-btn" onclick="window.selectCC(this,'${idx}','PNAE')">PNAE</button>
+          <button type="button" class="cc-btn" onclick="window.selectCC(this,'${idx}','Pescados')">Pescados</button>
+          <button type="button" class="cc-btn" onclick="window.selectCC(this,'${idx}','Loja')">Loja</button>
+          <button type="button" class="cc-btn" onclick="window.selectCC(this,'${idx}','Operacional')">Operacional</button>
+        </div>
+        <input type="hidden" id="t${idx}-cc" value="">
+      </div>
+    </div>
     <div class="field-grid two">
       <div class="field"><label>Hodômetro saída (km)</label><input type="number" id="t${idx}-saida" placeholder="00000" min="0"></div>
       <div class="field"><label>Hodômetro chegada (km)</label><input type="number" id="t${idx}-chegada" placeholder="00000" min="0"></div>
@@ -419,6 +437,12 @@ window.addTrip = function() {
   document.getElementById('trip-list').appendChild(div);
   // set today
   div.querySelector(`#t${idx}-data`).valueAsDate = new Date();
+};
+
+window.selectCC = function(btn, idx, val) {
+  document.querySelectorAll(`#cc-${idx} .cc-btn`).forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById(`t${idx}-cc`).value = val;
 };
 
 window.removeTrip = function(idx) {
@@ -441,6 +465,7 @@ window.submitBoletim = async function() {
       data: document.getElementById(`t${idx}-data`)?.value || '',
       produtor: document.getElementById(`t${idx}-produtor`)?.value.trim() || '',
       cargo: document.getElementById(`t${idx}-cargo`)?.value.trim() || '',
+      cc: document.getElementById(`t${idx}-cc`)?.value || '',
       saida: document.getElementById(`t${idx}-saida`)?.value || '',
       chegada: document.getElementById(`t${idx}-chegada`)?.value || '',
     });
@@ -575,6 +600,7 @@ function renderBoletins() {
         <td>${dataTrip}</td>
         <td>${t.produtor||'—'}</td>
         <td>${t.cargo||'—'}</td>
+        <td>${t.cc||'—'}</td>
         <td>${t.saida||'—'}</td>
         <td>${t.chegada||'—'}</td>
         <td>${km}</td>
@@ -595,7 +621,7 @@ function renderBoletins() {
       <div class="record-body" id="rbody-b${idx}" style="overflow-x:auto">
         ${r.peso?`<div class="resp-info" style="margin-bottom:10px">Peso bruto: <strong>${r.peso}</strong></div>`:''}
         <table class="trip-table">
-          <thead><tr><th>Data</th><th>Produtor/Entidade</th><th>Cargo/Serviço</th><th>KM Saída</th><th>KM Chegada</th><th>Total KM</th></tr></thead>
+          <thead><tr><th>Data</th><th>Produtor/Entidade</th><th>Cargo/Serviço</th><th>Centro Custos</th><th>KM Saída</th><th>KM Chegada</th><th>Total KM</th></tr></thead>
           <tbody>${tripsHtml}</tbody>
         </table>
       </div>
