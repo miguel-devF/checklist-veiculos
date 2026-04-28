@@ -150,7 +150,18 @@
         <div class="field"><label>Data</label><input id="data" type="date"></div>
       </div>
       <div class="field-grid two">
-        <div class="field"><label>Motorista</label><input id="motorista" placeholder="Nome completo"></div>
+        <div class="field"><label>Motorista</label>
+          <input id="motorista" placeholder="Selecione ou digite..." list="lista-motoristas">
+          <datalist id="lista-motoristas">
+            <option value="Cristiano">
+            <option value="Gelielson">
+            <option value="Marcos">
+            <option value="Medson">
+            <option value="Doglas">
+            <option value="Kewin">
+            <option value="Vinícius">
+          </datalist>
+        </div>
         <div class="field"><label>Responsável pelo checklist</label><input id="responsavel" placeholder="Nome do responsável"></div>
       </div>
     </div>
@@ -181,7 +192,9 @@
         <div class="field"><label>Peso Bruto</label><input id="b-peso" placeholder="Ex: 3.500 kg"></div>
       </div>
       <div class="field-grid two">
-        <div class="field"><label>Motorista</label><input id="b-motorista" placeholder="Nome completo"></div>
+        <div class="field"><label>Motorista</label>
+          <input id="b-motorista" placeholder="Selecione ou digite..." list="lista-motoristas">
+        </div>
         <div class="field"><label>Semana de referência</label><input id="b-semana" type="date"></div>
       </div>
     </div>
@@ -214,6 +227,16 @@
       <div class="filters">
         <input id="filter-placa" placeholder="Filtrar por placa..." oninput="applyFilters()">
         <input id="filter-data" type="date" onchange="applyFilters()">
+        <select id="filter-motorista" onchange="applyFilters()">
+          <option value="">Todos os motoristas</option>
+          <option value="Cristiano">Cristiano</option>
+          <option value="Gelielson">Gelielson</option>
+          <option value="Marcos">Marcos</option>
+          <option value="Medson">Medson</option>
+          <option value="Doglas">Doglas</option>
+          <option value="Kewin">Kewin</option>
+          <option value="Vinícius">Vinícius</option>
+        </select>
         <select id="filter-status" onchange="applyFilters()">
           <option value="">Todos os status</option>
           <option value="ok">Tudo ok</option>
@@ -232,6 +255,16 @@
       <div class="filters">
         <input id="filter-b-placa" placeholder="Filtrar por placa..." oninput="applyBoletimFilters()">
         <input id="filter-b-data" type="date" onchange="applyBoletimFilters()">
+        <select id="filter-b-motorista" onchange="applyBoletimFilters()">
+          <option value="">Todos os motoristas</option>
+          <option value="Cristiano">Cristiano</option>
+          <option value="Gelielson">Gelielson</option>
+          <option value="Marcos">Marcos</option>
+          <option value="Medson">Medson</option>
+          <option value="Doglas">Doglas</option>
+          <option value="Kewin">Kewin</option>
+          <option value="Vinícius">Vinícius</option>
+        </select>
         <button class="clear-filters" onclick="clearBoletimFilters()">Limpar</button>
       </div>
       <div class="records-header">
@@ -513,9 +546,11 @@ window.applyFilters = function() {
   const placa = document.getElementById('filter-placa').value.trim().toUpperCase();
   const data = document.getElementById('filter-data').value;
   const status = document.getElementById('filter-status').value;
+  const motorista = document.getElementById('filter-motorista').value;
   filteredRecords = allRecords.filter(r => {
     if (placa && !r.placa.includes(placa)) return false;
     if (data && r.data!==data) return false;
+    if (motorista && r.motorista !== motorista) return false;
     if (status==='ok' && Object.values(r.checks||{}).some(v=>v==='ruim')) return false;
     if (status==='warn' && !Object.values(r.checks||{}).some(v=>v==='ruim')) return false;
     return true;
@@ -526,6 +561,7 @@ window.applyFilters = function() {
 window.clearFilters = function() {
   ['filter-placa','filter-data'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('filter-status').value='';
+  document.getElementById('filter-motorista').value='';
   applyFilters();
 };
 
@@ -574,9 +610,11 @@ async function loadBoletins() {
 window.applyBoletimFilters = function() {
   const placa = document.getElementById('filter-b-placa').value.trim().toUpperCase();
   const data = document.getElementById('filter-b-data').value;
+  const motorista = document.getElementById('filter-b-motorista').value;
   filteredBoletins = allBoletins.filter(r => {
     if (placa && !r.placa.includes(placa)) return false;
     if (data && r.semana!==data) return false;
+    if (motorista && r.motorista !== motorista) return false;
     return true;
   });
   renderBoletins();
@@ -584,6 +622,7 @@ window.applyBoletimFilters = function() {
 
 window.clearBoletimFilters = function() {
   ['filter-b-placa','filter-b-data'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('filter-b-motorista').value='';
   applyBoletimFilters();
 };
 
