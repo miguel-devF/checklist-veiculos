@@ -580,6 +580,7 @@ function renderRecords() {
         <div class="record-info">
           <span class="record-placa">${r.placa}</span>
           <span class="record-meta">${r.motorista} — ${dateStr} — ${Number(r.km).toLocaleString('pt-BR')} km</span>
+          ${ruins > 0 && r.obs ? `<span style="font-size:11px;color:var(--red-text);margin-top:2px">⚠ ${r.obs.length > 60 ? r.obs.substring(0,60)+'...' : r.obs}</span>` : ''}
         </div>
         <div class="record-right">
           <span class="badge ${ruins>0?'badge-warn':'badge-ok'}">${ruins>0?ruins+' ruim':'Tudo ok'}</span>
@@ -590,7 +591,7 @@ function renderRecords() {
       <div class="record-body" id="rbody-c${idx}">
         ${r.responsavel?`<div class="resp-info">Responsável: <strong>${r.responsavel}</strong></div>`:''}
         <div class="rec-checks">${checksHtml}</div>
-        ${r.obs?`<div class="obs-label">Observações</div><div class="obs-box">${r.obs}</div>`:''}
+        ${r.obs?`<div class="obs-label" style="color:var(--red-text)">⚠ Observações de itens com problema</div><div class="obs-box" style="background:var(--red-light);border-color:#f5c6c6;color:var(--red-text)">${r.obs}</div>`:''}
       </div>
     </div>`;
   }).join('');
